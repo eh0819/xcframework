@@ -136,7 +136,7 @@ public class XCFrameworkBuilder {
                     if(scheme.trimmingCharacters(in: .whitespacesAndNewlines) == "watchOS") {
                         
                         var watchScheme = schemeToUse!
-                        watchScheme.append("WatchOS")
+                        watchScheme.append("watchOS")
                          try frameworksArguments.append(contentsOf: buildScheme(scheme: watchScheme, sdk: .watchOS, project: project, name: name, buildPath: finalBuildDirectory))
                     }
                     

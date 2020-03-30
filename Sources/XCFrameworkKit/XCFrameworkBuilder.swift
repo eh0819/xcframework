@@ -128,15 +128,15 @@ public class XCFrameworkBuilder {
                 try splitSchemes.forEach { scheme in
                     
                     if(scheme.trimmingCharacters(in: .whitespacesAndNewlines) == "iOS") {
-                        var iosScheme = schemeToUse!
+                        var iosScheme = String(schemeToUse!)
                         iosScheme.append("Production")
                         try frameworksArguments.append(contentsOf: buildScheme(scheme: iosScheme, sdk: .iOS, project: project, name: name, buildPath: finalBuildDirectory))
                     }
                     
                     if(scheme.trimmingCharacters(in: .whitespacesAndNewlines) == "watchOS") {
                         
-                        var watchScheme = schemeToUse!
-                        watchScheme.append("watchOS")
+                        var watchScheme = String(schemeToUse!)
+                        watchScheme.append("WatchOS")
                          try frameworksArguments.append(contentsOf: buildScheme(scheme: watchScheme, sdk: .watchOS, project: project, name: name, buildPath: finalBuildDirectory))
                     }
                     

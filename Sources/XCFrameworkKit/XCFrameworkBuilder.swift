@@ -16,7 +16,7 @@ public class XCFrameworkBuilder {
     public var iOSScheme: String?
     public var watchOSScheme: String?
     public var tvOSScheme: String?
-    public var macOSScheme: String?
+    public var allScheme: String?
     public var verbose: Bool = false
     public var compilerArguments: [String]?
     
@@ -70,7 +70,7 @@ public class XCFrameworkBuilder {
             return .failure(XCFrameworkError.projectNotFound)
         }
         
-        guard watchOSScheme != nil || iOSScheme != nil || macOSScheme != nil || tvOSScheme != nil else {
+        guard watchOSScheme != nil || iOSScheme != nil || allScheme != nil || tvOSScheme != nil else {
             return .failure(XCFrameworkError.noSchemesFound)
         }
         
@@ -97,23 +97,50 @@ public class XCFrameworkBuilder {
         
         //try all supported SDKs
         do {
-            if let watchOSScheme = watchOSScheme {
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: watchOSScheme, sdk: .watchOS, project: project, name: name, buildPath: finalBuildDirectory))
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: watchOSScheme, sdk: .watchOSSim, project: project, name: name, buildPath: finalBuildDirectory))
-            }
             
-            if let iOSScheme = iOSScheme {
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: iOSScheme, sdk: .iOS, project: project, name: name, buildPath: finalBuildDirectory))
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: iOSScheme, sdk: .iOSSim, project: project, name: name, buildPath: finalBuildDirectory))
-            }
+//            if let watchOSScheme = watchOSScheme {
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: watchOSScheme, sdk: .watchOS, project: project, name: name, buildPath: finalBuildDirectory))
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: watchOSScheme, sdk: .watchOSSim, project: project, name: name, buildPath: finalBuildDirectory))
+//            }
+//            
+//            if let iOSScheme = iOSScheme {
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: iOSScheme, sdk: .iOS, project: project, name: name, buildPath: finalBuildDirectory))
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: iOSScheme, sdk: .iOSSim, project: project, name: name, buildPath: finalBuildDirectory))
+//            }
+//            
+//            if let tvOSScheme = tvOSScheme {
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: tvOSScheme, sdk: .tvOS, project: project, name: name, buildPath: finalBuildDirectory))
+//                try frameworksArguments.append(contentsOf: buildScheme(scheme: tvOSScheme, sdk: .tvOSSim, project: project, name: name, buildPath: finalBuildDirectory))
+//            }
             
-            if let tvOSScheme = tvOSScheme {
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: tvOSScheme, sdk: .tvOS, project: project, name: name, buildPath: finalBuildDirectory))
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: tvOSScheme, sdk: .tvOSSim, project: project, name: name, buildPath: finalBuildDirectory))
-            }
             
-            if let macOSScheme = macOSScheme {
-                try frameworksArguments.append(contentsOf: buildScheme(scheme: macOSScheme, sdk: .macOS, project: project, name: name, buildPath: finalBuildDirectory))
+            // Modified for Dexcom scheme pattern
+            // This will use the xcframework project name as the scheme
+            if let allScheme = allScheme {
+                
+                // Let's split up the different schemes into their corresponding values
+                
+                let splitSchemes = allScheme.components(separatedBy: ",");
+                
+                // Get the same of the scheme
+                let schemeToUse = ((project as NSString).lastPathComponent).split(separator: ".").map(String.init).first
+                
+                try splitSchemes.forEach { scheme in
+                    
+                    if(scheme.trimmingCharacters(in: .whitespacesAndNewlines) == "iOS") {
+                        
+                         try frameworksArguments.append(contentsOf: buildScheme(scheme: schemeToUse!, sdk: .iOS, project: project, name: name, buildPath: finalBuildDirectory))
+                    }
+                    
+                    if(scheme.trimmingCharacters(in: .whitespacesAndNewlines) == "watchOS") {
+                        
+                         try frameworksArguments.append(contentsOf: buildScheme(scheme: schemeToUse!, sdk: .watchOS, project: project, name: name, buildPath: finalBuildDirectory))
+                    }
+                    
+                    
+                }
+                
+               
             }
         } catch let error as XCFrameworkError {
             return .failure(error)

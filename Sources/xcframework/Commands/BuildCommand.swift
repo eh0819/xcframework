@@ -27,12 +27,12 @@ struct BuildCommand: CommandProtocol {
         let iOSScheme: String?
         let watchOSScheme: String?
         let tvOSScheme: String?
-        let macOSScheme: String?
+        let allScheme: String?
         let verbose: Bool
         let compilerArguments: [String]
         
         static func create(_ project: String?) -> (String?) -> (String) -> (String) -> (String?) -> (String?) -> (String?) -> (String?) -> (Bool) -> ([String]) -> Options {
-            return { name in { outputDirectory in { buildDirectory in { iOSScheme in { watchOSScheme in { tvOSScheme in { macOSScheme in { verbose in { compilerArguments in Options(project: project, name: name, outputDirectory: outputDirectory, buildDirectory: buildDirectory, iOSScheme: iOSScheme, watchOSScheme: watchOSScheme, tvOSScheme: tvOSScheme, macOSScheme: macOSScheme, verbose: verbose, compilerArguments: compilerArguments) } } } } } } } } }
+            return { name in { outputDirectory in { buildDirectory in { iOSScheme in { watchOSScheme in { tvOSScheme in { allScheme in { verbose in { compilerArguments in Options(project: project, name: name, outputDirectory: outputDirectory, buildDirectory: buildDirectory, iOSScheme: iOSScheme, watchOSScheme: watchOSScheme, tvOSScheme: tvOSScheme, allScheme: allScheme, verbose: verbose, compilerArguments: compilerArguments) } } } } } } } } }
         }
         
         static func evaluate(_ mode: CommandMode) -> Result<Options, CommandantError<CommandantError<()>>> {
@@ -60,7 +60,7 @@ struct BuildCommand: CommandProtocol {
             builder.iOSScheme = options.iOSScheme
             builder.watchOSScheme = options.watchOSScheme
             builder.tvOSScheme = options.tvOSScheme
-            builder.macOSScheme = options.macOSScheme
+            builder.allScheme = options.allScheme
             builder.verbose = options.verbose
             builder.compilerArguments = options.compilerArguments
         }
